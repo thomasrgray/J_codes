@@ -246,6 +246,104 @@ def basic_np(outport=40, opentime=0.012, iti=[.4, 1, 2], trials=200, outtime=0):
 
     print('Basic nose poking has been completed.')
 
+
+def odor_np(outport=40, odorport=36, vacport=37, t_opentime=0.012, o_opentime=0.5, v_opentime=1, iti=[.4, 1, 2], trials=200, outtime=0):
+
+    intaninput_t = 8
+    intaninput_o = 10
+    intaninput_v = 12
+    trial = 1
+    inport = 13
+    pokelight = 15 #edit
+    houselight = 22 #edit
+#    lights = 0
+    maxtime = 60
+
+    # Setup pi board GPIO ports
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setup(pokelight, GPIO.OUT)
+    GPIO.setup(houselight, GPIO.OUT)
+    GPIO.setup(inport, GPIO.IN)
+    GPIO.setup(outport, GPIO.OUT)
+    GPIO.setup(intaninput_t, GPIO.OUT)
+    GPIO.setup(odorport, GPIO.OUT)
+    GPIO.setup(intaninput_o, GPIO.OUT)
+    GPIO.setup(vacport, GPIO.OUT)
+    GPIO.setup(intaninput_v, GPIO.OUT)
+    
+    time.sleep(15)
+    starttime = time.time()
+
+    while trial <= trials:
+
+        # Timer to stop experiment if over 60 mins
+        curtime = time.time()
+        elapsedtime = round((curtime - starttime)/60, 2)
+        if elapsedtime > maxtime:
+            GPIO.output(pokelight, 0)
+            GPIO.output(houselight, 0)
+            break
+
+#        if lights == 0:
+#            GPIO.output(pokelight, 1)
+        GPIO.output(houselight, 1)
+#            lights = 1
+
+        # Check for pokes
+        if GPIO.input(inport) == 0:
+            poketime = time.time()
+            curtime = poketime
+            #vacuum
+            GPIO.output(vacport, 1)
+            GPIO.output(intaninput_v, 1)
+            time.sleep(0.2)  # Overlap vacport with odorport
+            GPIO.output(odorport, 1)
+            GPIO.output(intaninput_o, 1)
+            time.sleep(0.5)  # Remaining 0.2 seconds of odorport opentime
+            GPIO.output(vacport, 0)
+            GPIO.output(odorport, 0)
+            GPIO.output(intaninput_v, 0)
+            GPIO.output(intaninput_o, 0)
+
+            # Make rat remove nose from nose poke to receive reward
+            while (curtime - poketime) <= outtime:
+                if GPIO.input(inport) == 0:
+                    poketime = time.time()
+                curtime = time.time()
+
+            # Taste delivery and switch off lights
+            GPIO.output(outport, 1)
+            GPIO.output(intaninput_t, 1)
+            time.sleep(t_opentime)
+            GPIO.output(outport, 0)
+            GPIO.output(intaninput_t, 1)
+#            GPIO.output(pokelight, 0)
+            GPIO.output(houselight, 0)
+            print('Trial '+str(trial)+' of '+str(trials)+' completed.')
+            trial += 1
+#            lights = 0
+
+            # Calculate and execute ITI delay.  Pokes during ITI reset ITI timer.
+            delay = np.random.choice(np.arange(30, 40, 1), size=1)
+            time.sleep(delay)
+            
+# =============================================================================
+#             if trial <= trials/2:
+#                 delay = floor((random.random()*(iti[1]-iti[0]))*100)/100+iti[0]
+#             else:
+#                 delay = floor((random.random()*(iti[2]-iti[0]))*100)/100+iti[0]
+# 
+#             poketime = time.time()
+#             curtime = poketime
+# 
+#             while (curtime - poketime) <= delay:
+#                 if GPIO.input(inport) == 0:
+#                     poketime = time.time()
+#                 curtime = time.time()
+# 
+# =============================================================================
+    print('Basic nose poking has been completed.')
+
 # Passive H2O deliveries
 
 
