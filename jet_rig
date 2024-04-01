@@ -21,7 +21,7 @@ GPIO.setwarnings(False)
 GPIO.cleanup()
 GPIO.setmode(GPIO.BOARD)
 # Function to clear taste lines
-def clearout(outports=[7, 11, 12, 13, 16, 31, 32, 33, 35, 36, 37, 38, 40, 15, 5, 3, 29], dur=5):
+def clearout(outports=[7, 11, 12, 13, 15, 16, 18, 22, 29, 31, 32, 33, 35, 36, 37, 38, 40], dur=5):
     # Setup GPIO ports
     GPIO.setmode(GPIO.BOARD)
     for i in outports:
@@ -39,7 +39,7 @@ def clearout(outports=[7, 11, 12, 13, 16, 31, 32, 33, 35, 36, 37, 38, 40, 15, 5,
     print('Tastant line clearing complete.')
 
 # Function to calibrate taste lines
-def calibrate(outports=[7, 11, 13, 12, 16, 23, 29, 31, 32, 33, 35, 36, 37, 38, 40], opentime=0.05, repeats=5):
+def calibrate(outports=[7, 11, 12, 13, 15, 16, 18, 22, 29, 31, 32, 33, 35, 36, 37, 38, 40], opentime=0.05, repeats=5):
     # Setup GPIO ports
     GPIO.setmode(GPIO.BOARD)
     for i in outports:
@@ -56,7 +56,7 @@ def calibrate(outports=[7, 11, 13, 12, 16, 23, 29, 31, 32, 33, 35, 36, 37, 38, 4
 
     print('Calibration procedure complete.')
 # Function for passive deliveries
-def passive(outports=[37, 36, 38, 40, 32, 16, 18], intaninputs=[15, 19, 21, 23, 11, 12, 13], 
+def passive(outports=[18, 22, 29, 31, 32, 33], intaninputs=[7, 11, 12, 13, 15, 16], 
             opentimes=[0.01, 0.01, 0.01, 0.01, 0.01, 0.01], itimin=22, itimax=22, trials=30):
     # Ask for directory to save data
     directory = easygui.diropenbox(msg='Select the directory to save the delivery times from this experiment.', title='Select directory')
@@ -103,8 +103,8 @@ def passive(outports=[37, 36, 38, 40, 32, 16, 18], intaninputs=[15, 19, 21, 23, 
 
     print('Delivery times .csv saved.')
 # Function for passive cue deliveries
-def passive_cue(outports=[7, 11, 13, 16, 31, 32, 33, 35, 36, 37, 38, 40], 
-                intaninputs=[24, 26, 19, 21], opentimes=[0.01], itimin=10, itimax=30, trials=150,
+def passive_cue(outports=[18, 22, 29, 31, 32, 33], 
+                intaninputs=[7, 11, 12, 13, 15, 16], opentimes=[0.01], itimin=10, itimax=30, trials=150,
                 cue_input=40):
 
     # Setup GPIO ports
@@ -152,15 +152,15 @@ def passive_cue(outports=[7, 11, 13, 16, 31, 32, 33, 35, 36, 37, 38, 40],
 
     print('Delivery times .csv saved.')
 # Function for basic nose poking procedure
-def basic_np(outport=40, opentime=0.012, iti=[.4, 1, 2], trials=200, outtime=0):
-    intaninput = 8
+def basic_np(outport=31, opentime=0.012, iti=[.4, 1, 2], trials=200, outtime=0):
+    intaninput = 35
     trial = 1
-    inport = 13
-    pokelight = 15
-    houselight = 22
+    inport = 36
+    pokelight = 37
+    houselight = 38
     lights = 0
     maxtime = 60
-
+#35, 36, 37, 38, 40
     # Setup GPIO ports
     GPIO.setmode(GPIO.BOARD)
     GPIO.setup(pokelight, GPIO.OUT)
@@ -225,14 +225,14 @@ def basic_np(outport=40, opentime=0.012, iti=[.4, 1, 2], trials=200, outtime=0):
 
     print('Basic nose poking has been completed.')
 # Function for odor nose poking procedure
-def odor_np(outport=40, odorport=36, vacport=37, t_opentime=0.012, o_opentime=0.5, v_opentime=1, iti=[.4, 1, 2], trials=200, outtime=0):
-    intaninput_t = 8
-    intaninput_o = 10
+def odor_np(outport=31, odorport=40, vacport=38, t_opentime=0.012, o_opentime=0.5, v_opentime=1, iti=[.4, 1, 2], trials=200, outtime=0):
+    intaninput_t = 7
+    intaninput_o = 11
     intaninput_v = 12
     trial = 1
-    inport = 13
-    pokelight = 15
-    houselight = 22
+    inport = 36
+    pokelight = 37
+    houselight = 38
     maxtime = 60
 
     # Setup GPIO ports
@@ -302,12 +302,11 @@ def odor_np(outport=40, odorport=36, vacport=37, t_opentime=0.012, o_opentime=0.
 # Function to clear all GPIO settings
 def clearall():
     # Define GPIO ports to be cleared
-    outports = [7, 11, 13, 16, 31, 33, 35, 37, 32, 36, 16, 18, 38, 40]
-    inports = [11, 13, 15]
-    pokelights = [15]
-    houselight = 22
-    lasers = [12, 18, 23, 8]
-    intan = [12, 15, 19, 21, 23, 11, 13]
+    outports = [7, 11, 12, 13, 15, 16, 18, 22, 29, 31, 32, 33, 35, 36, 37, 38, 40]
+    inports = [36]
+    pokelights = [37]
+    houselight = 38
+    intan = [7, 11, 12, 13, 15, 16]
 
     # Set all ports to default/low state
     for i in intan:
